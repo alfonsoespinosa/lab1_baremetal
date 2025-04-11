@@ -7,7 +7,7 @@ static void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_UART_Init(void);
 
-void init()
+void hw_init()
 {
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
@@ -19,6 +19,21 @@ void init()
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_UART_Init();
+}
+
+void toggle_red_led()
+{
+  HAL_GPIO_TogglePin(RED_LED_GPIO_PORT, RED_LED_GPIO_PIN);
+}
+
+void toggle_green_led()
+{
+  HAL_GPIO_TogglePin(GREEN_LED_GPIO_PORT, GREEN_LED_GPIO_PIN);
+}
+
+void toggle_blue_led()
+{
+  HAL_GPIO_TogglePin(BLUE_LED_GPIO_PORT, BLUE_LED_GPIO_PIN);
 }
 
 void SystemClock_Config(void)
@@ -112,11 +127,13 @@ void MX_GPIO_Init(void)
   HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 }
 
+extern const uint32_t UART_BAUDRATE;
+
 void MX_UART_Init(void)
 {
   huart3.Instance = USART3;
 
-  huart3.Init.BaudRate = 115200;
+  huart3.Init.BaudRate = UART_BAUDRATE;
   huart3.Init.WordLength = UART_WORDLENGTH_8B;
   huart3.Init.StopBits = UART_STOPBITS_1;
   huart3.Init.Parity = UART_PARITY_NONE;
@@ -130,6 +147,10 @@ void MX_UART_Init(void)
 int __io_putchar(int ch)
 {
 #if TRACE
+  if (ch == '\n') {
+    uint8_t CR = '\r';
+    HAL_UART_Transmit(&huart3, &CR, 1, 0xFFFF);
+  }
   HAL_UART_Transmit(&huart3, (uint8_t *)&ch, 1, 0xFFFF);
 #endif
 

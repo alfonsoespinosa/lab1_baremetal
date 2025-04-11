@@ -2,32 +2,28 @@
 #include <stdio.h>
 
 #include "main.h"
-#include "hw.h"
 
-#define GREEN_LED_TOOGLE_TIME_MS 500
-#define BLUE_LED_TOGGLE_TIME_MS 333
+extern void hw_init();
 
-bool toggle_red = false;
+extern void toggle_red_led();
+extern void toggle_green_led();
+extern void toggle_blue_led();
 
 static void delay_ms(uint32_t msec)
 {
-	uint32_t initial_tick_ms = HAL_GetTick();
-	uint32_t final_tick_ms = initial_tick_ms + msec;
-
-	while (HAL_GetTick() < final_tick_ms) {}
+  volatile uint32_t counter = 14000 * msec;
+  while (counter--) {}
 }
+
+const uint32_t UART_BAUDRATE = 9600;
 
 int main(void)
 {
-  init();
-
-  int32_t green_led_toggle_time_ms = GREEN_LED_TOOGLE_TIME_MS;
-  int32_t blue_led_toggle_time_ms = BLUE_LED_TOGGLE_TIME_MS;
-  uint32_t prev_tick_ms = HAL_GetTick();
+  hw_init();
 
   while (1)
   {
-	// Bucle
+    /* SUPERLOOP */
   }
 }
 
@@ -35,8 +31,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
   if (USER_BUTTON_GPIO_PIN == GPIO_Pin)
   {
-    HAL_GPIO_TogglePin(RED_LED_GPIO_PORT, RED_LED_GPIO_PIN);
-    toggle_red = true;
   }
 }
 
