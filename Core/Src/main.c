@@ -53,26 +53,28 @@ int main(void)
 	  uint32_t current_tick_ms = HAL_GetTick();
 	  uint32_t elapsed_ms = current_tick_ms - prev_tick_ms;
 
-	  led_toggle_time_ms[GREEN] -= elapsed_ms;
-	  led_toggle_time_ms[RED] -= elapsed_ms;
-	  led_toggle_time_ms[BLUE] -= elapsed_ms;
+	  if (elapsed_ms) {
+		  led_toggle_time_ms[GREEN] -= elapsed_ms;
+		  led_toggle_time_ms[RED] -= elapsed_ms;
+		  led_toggle_time_ms[BLUE] -= elapsed_ms;
 
-	  if (led_toggle_time_ms[GREEN] <= 0) {
-		  toggle_green_led();
-		  reset_timer(GREEN);
+		  if (led_toggle_time_ms[GREEN] <= 0) {
+			  toggle_green_led();
+			  reset_timer(GREEN);
+		  }
+
+		  if (led_toggle_time_ms[RED] <= 0) {
+			  toggle_red_led();
+			  reset_timer(RED);
+		  }
+
+		  if (led_toggle_time_ms[BLUE] <= 0) {
+			  toggle_blue_led();
+			  reset_timer(BLUE);
+		  }
+
+		  prev_tick_ms = HAL_GetTick();
 	  }
-
-	  if (led_toggle_time_ms[RED] <= 0) {
-		  toggle_red_led();
-		  reset_timer(RED);
-	  }
-
-	  if (led_toggle_time_ms[BLUE] <= 0) {
-		  toggle_blue_led();
-		  reset_timer(BLUE);
-	  }
-
-	  prev_tick_ms = HAL_GetTick();
   }
 
 }
