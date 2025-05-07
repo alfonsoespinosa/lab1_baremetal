@@ -20,11 +20,18 @@ const uint32_t UART_BAUDRATE = 9600;
 #define DELAY_GREEN 400
 #define DELAY_BLUE  100
 
+static inline void delay_ms(uint32_t msec)
+{
+  volatile uint32_t counter = 14000 * msec;
+
+  while (counter--) {}
+}
+
 void red_led_task()
 {
   while (1) {
     toggle_red_led();
-    HAL_Delay(DELAY_RED);
+    delay_ms(DELAY_RED);
   }
 }
 
@@ -32,7 +39,7 @@ void green_led_task()
 {
   while (1) {
     toggle_green_led();
-    HAL_Delay(DELAY_GREEN);
+    delay_ms(DELAY_GREEN);
   }
 }
 
@@ -40,7 +47,7 @@ void blue_led_task()
 {
   while (1) {
     toggle_blue_led();
-    HAL_Delay(DELAY_BLUE);
+    delay_ms(DELAY_BLUE);
   }
 }
 
