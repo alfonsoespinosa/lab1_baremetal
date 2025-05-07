@@ -64,6 +64,14 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   }
 }
 
+/**
+  * @brief This function handles System tick timer.
+  */
+void SysTick_Handler(void)
+{
+  HAL_IncTick();
+}
+
 void Error_Handler(void)
 {
   __disable_irq();
