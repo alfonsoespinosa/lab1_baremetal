@@ -14,69 +14,47 @@ extern void green_led_on();
 extern void red_led_off();
 extern void green_led_off();
 
-
-static void delay_ms(uint32_t msec)
-{
-  volatile uint32_t counter = 14000 * msec;
-
-  while (counter--) {}
-}
-
 const uint32_t UART_BAUDRATE = 9600;
 
-enum { RED = 0, GREEN, BLUE, NUM_LEDS };
+#define DELAY_RED   500
+#define DELAY_GREEN 400
+#define DELAY_BLUE  100
 
-uint32_t led_period_ms[NUM_LEDS];
-int32_t led_toggle_time_ms[NUM_LEDS];
-
-void reset_timer(int led)
+void red_led_task()
 {
-	led_toggle_time_ms[led] = led_period_ms[led];
+  while (1) {
+    toggle_red_led();
+    HAL_Delay(DELAY_RED);
+  }
+}
+
+void green_led_task()
+{
+  while (1) {
+    toggle_green_led();
+    HAL_Delay(DELAY_GREEN);
+  }
+}
+
+void blue_led_task()
+{
+  while (1) {
+    toggle_blue_led();
+    HAL_Delay(DELAY_BLUE);
+  }
 }
 
 int main(void)
 {
   hw_init();
 
-  led_period_ms[RED] = 500;
-  led_period_ms[GREEN] = 400;
-  led_period_ms[BLUE] = 100;
-
-  reset_timer(RED);
-  reset_timer(GREEN);
-  reset_timer(BLUE);
-
-  uint32_t prev_tick_ms = HAL_GetTick();
+  red_led_task();
+  green_led_task();
+  blue_led_task();
 
   while (1)
   {
-	  uint32_t current_tick_ms = HAL_GetTick();
-	  uint32_t elapsed_ms = current_tick_ms - prev_tick_ms;
-
-	  if (elapsed_ms) {
-		  led_toggle_time_ms[GREEN] -= elapsed_ms;
-		  led_toggle_time_ms[RED] -= elapsed_ms;
-		  led_toggle_time_ms[BLUE] -= elapsed_ms;
-
-		  if (led_toggle_time_ms[GREEN] <= 0) {
-			  toggle_green_led();
-			  reset_timer(GREEN);
-		  }
-
-		  if (led_toggle_time_ms[RED] <= 0) {
-			  toggle_red_led();
-			  reset_timer(RED);
-		  }
-
-		  if (led_toggle_time_ms[BLUE] <= 0) {
-			  toggle_blue_led();
-			  reset_timer(BLUE);
-		  }
-
-		  prev_tick_ms = HAL_GetTick();
-	  }
   }
-
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
