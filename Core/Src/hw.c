@@ -1,3 +1,5 @@
+#include <stdbool.h>
+
 #include "stm32f4xx_hal.h"
 #include "main.h"
 
@@ -64,6 +66,11 @@ void toggle_green_led()
 void toggle_blue_led()
 {
   HAL_GPIO_TogglePin(BLUE_LED_GPIO_PORT, BLUE_LED_GPIO_PIN);
+}
+
+bool is_button_pressed()
+{
+	return (HAL_GPIO_ReadPin(USER_BUTTON_GPIO_PORT, USER_BUTTON_GPIO_PIN) == GPIO_PIN_SET);
 }
 
 void SystemClock_Config(void)

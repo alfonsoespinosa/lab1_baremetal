@@ -14,6 +14,7 @@ extern void blue_led_off();
 extern void toggle_red_led();
 extern void toggle_green_led();
 extern void toggle_blue_led();
+extern bool is_button_pressed();
 
 void delay_ms(uint32_t msec)
 {
